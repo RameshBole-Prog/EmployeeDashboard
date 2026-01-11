@@ -1,24 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import Login from './components/Auth/Login';
+import DashboardLayout from './components/Layout/DashboardLayout';
+import Dashboard from './components/Dashboard/Dashboard';
+import Employees from './components/Employee/Employees';
+import EmployeeFormPage from './components/Employee/EmployeeFormPage'; 
+import PrivateRoute from './components/Auth/PrivateRoute';
+import { EmployeeProvider } from './context/EmployeeContext';
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AuthProvider>
+      <EmployeeProvider> 
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route 
+            path="/" 
+            element={
+              <PrivateRoute>
+                <DashboardLayout />
+              </PrivateRoute>
+            }
+          >
+            <Route index element={<Dashboard />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="employees" element={<Employees />} />
+            <Route path="employees/add" element={<EmployeeFormPage />} />
+            <Route path="employees/edit/:id" element={<EmployeeFormPage />} />
+          </Route>
+        </Routes>
+      </Router>
+      </EmployeeProvider>
+    </AuthProvider>
   );
 }
 
